@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menő Offline QR kód olvasó</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #2a2a72, #009ffd);
+            color: #fff;
+            margin: 0;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        #qr-reader {
+            width: 400px;
+            height: 400px;
+            border: 2px solid #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            background: #000;
+        }
+        #qr-result {
+            margin-top: 20px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        #qr-result span {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Menő Offline QR kód olvasó</h1>
+    <div id="qr-reader"></div>
+    <div id="qr-result">
+        <b>QR Kód tartalma:</b> <span id="qr-content">Nincs beolvasott kód</span>
+    </div>
+
+    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+    <script>
+        function onScanSuccess(decodedText, decodedResult) {
+            document.getElementById('qr-content').innerText = decodedText;
+        }
+
+        function onScanFailure(error) {
+            console.warn(`QR kód beolvasási hiba: ${error}`);
+        }
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            let html5QrCode = new Html5Qrcode("qr-reader");
+
+            html5QrCode.start(
+                { facingMode: "environment" }, // Hátsó kamera használata
+                {
+                    fps: 10,    // Képkockák másodpercenként
+                    qrbox: 250  // Beolvasási keret mérete
+                },
+                onScanSuccess,
+                onScanFailure
+            ).catch(err => {
+                console.error(`QR kód olvasási hiba: ${err}`);
+            });
+        });
+    </script>
+</body>
+</html>
